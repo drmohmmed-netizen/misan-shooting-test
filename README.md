@@ -1,2 +1,5 @@
-# misan-shooting-test
-Metaliteracy handball shooting test - Misan University
+# اختبار الميتاليتراسي في التصويب
+
+اختبار مهارة التصويب بكرة اليد – كلية التربية البدنية وعلوم الرياضة، جامعة ميسان.
+
+رابط التطبيق: https://drmohmmed-netizen.github.io/misan-shooting-test/
