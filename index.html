@@ -268,19 +268,35 @@ progress();
 <script>
 if ("serviceWorker" in navigator) addEventListener("load", ()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 let deferredInstall=null;
-addEventListener("beforeinstallprompt", e=>{ e.preventDefault(); deferredInstall=e; const b=document.getElementById("installBtn"); if(b) b.hidden=false; });
+addEventListener("beforeinstallprompt", e=>{ e.preventDefault(); deferredInstall=e; });
+addEventListener("appinstalled", ()=>{ const b=document.querySelector(".installbox"); if(b) b.remove(); });
 addEventListener("DOMContentLoaded", ()=>{
   const intro=document.querySelector(".intro"); if(!intro) return;
-  const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
-  if(standalone) return;
-  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  if(matchMedia("(display-mode: standalone)").matches || navigator.standalone) return;
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1);
   const box=document.createElement("div"); box.className="installbox";
-  box.innerHTML = `<button class="primary" type="button" id="installBtn" hidden>📲 تثبيت التطبيق على الهاتف</button>`
-    + (ios ? `<div class="ihint">للتثبيت على آيفون: اضغط زر المشاركة ⬆️ في Safari ثم «إضافة إلى الشاشة الرئيسية».</div>` : `<div class="ihint" id="ahint">للتثبيت: من قائمة المتصفح ⋮ اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».</div>`);
+  box.innerHTML = `<button type="button" id="installBtn" class="installbtn"><span class="ic">📲</span><span><b>ثبّت التطبيق على هاتفك</b><small>ليعمل بدون إنترنت بأيقونة على الشاشة الرئيسية</small></span></button>
+    <div class="isteps" id="isteps" hidden>${ios
+      ? `<b>طريقة التثبيت على آيفون:</b><ol><li>افتح هذا الرابط في متصفح <b>Safari</b>.</li><li>اضغط زر المشاركة <span class="k">⬆️</span> أسفل الشاشة.</li><li>اختر <b>«إضافة إلى الشاشة الرئيسية»</b>.</li><li>اضغط <b>«إضافة»</b> في الأعلى.</li></ol>`
+      : `<b>طريقة التثبيت على أندرويد:</b><ol><li>افتح هذا الرابط في متصفح <b>Chrome</b>.</li><li>اضغط النقاط الثلاث <span class="k">⋮</span> أعلى الشاشة.</li><li>اختر <b>«تثبيت التطبيق»</b> أو <b>«إضافة إلى الشاشة الرئيسية»</b>.</li><li>اضغط <b>«تثبيت»</b> للتأكيد.</li></ol>`}</div>`;
   intro.appendChild(box);
-  document.getElementById("installBtn").onclick = async ()=>{ if(!deferredInstall) return; deferredInstall.prompt(); await deferredInstall.userChoice.catch(()=>{}); deferredInstall=null; box.remove(); };
-  if(deferredInstall){ document.getElementById("installBtn").hidden=false; }
+  document.getElementById("installBtn").onclick = async ()=>{
+    if(deferredInstall){ deferredInstall.prompt(); const r=await deferredInstall.userChoice.catch(()=>null); deferredInstall=null; if(r && r.outcome==="accepted"){ box.remove(); return; } }
+    const st=document.getElementById("isteps"); st.hidden=!st.hidden;
+  };
 });
 </script>
-<style>.installbox{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:10px}.installbox .ihint{font-size:.85rem;color:var(--muted)}</style>
+<style>
+.installbox{display:flex;flex-direction:column;align-items:stretch;gap:10px;margin-top:14px;width:100%;max-width:420px}
+.installbtn{display:flex;align-items:center;gap:12px;justify-content:center;text-align:start;background:var(--ball);border-color:var(--ball);color:#fff;padding:14px 18px;border-radius:14px;box-shadow:0 6px 16px rgba(217,96,26,.28);animation:pulse 2.4s ease-in-out infinite}
+.installbtn .ic{font-size:1.8rem;line-height:1}
+.installbtn b{display:block;font-size:1.05rem}
+.installbtn small{display:block;font-weight:500;font-size:.8rem;opacity:.92}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+.isteps{text-align:start;background:var(--ball-soft);border-radius:12px;padding:12px 16px;font-size:.92rem}
+.isteps ol{margin:6px 0 0;padding-inline-start:20px}
+.isteps li{margin:4px 0}
+.isteps .k{display:inline-block;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:0 6px}
+@media (prefers-reduced-motion:reduce){.installbtn{animation:none}}
+</style>
 </body></html>
