@@ -1,7 +1,16 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>اختبار الميتاليتراسي في التصويب</title>
-<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#1f5fae">
-<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png?v=4"><link rel="icon" type="image/png" href="icon-192.png?v=4"><meta name="apple-mobile-web-app-title" content="اختبار التصويب">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1f5fae">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=4">
+<link rel="icon" type="image/png" href="icon-192.png?v=4">
+<meta name="apple-mobile-web-app-title" content="اختبار التصويب">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head><body>
+
+
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 /* Layout: single reading column on a court-blue ground; sticky score strip; questions grouped by four domains */
@@ -274,8 +283,11 @@ addEventListener("DOMContentLoaded", ()=>{
   const intro=document.querySelector(".intro"); if(!intro) return;
   if(matchMedia("(display-mode: standalone)").matches || navigator.standalone) return;
   const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1);
+  const inapp = /FBAN|FBAV|Instagram|WhatsApp|Telegram|Line\/|Snapchat|TikTok|; wv\)/i.test(navigator.userAgent);
+  const iosNotSafari = ios && /CriOS|FxiOS|EdgiOS|OPiOS/i.test(navigator.userAgent);
   const box=document.createElement("div"); box.className="installbox";
   box.innerHTML = `<button type="button" id="installBtn" class="installbtn"><span class="ic">📲</span><span><b>ثبّت التطبيق على هاتفك</b><small>ليعمل بدون إنترنت بأيقونة على الشاشة الرئيسية</small></span></button>
+    ${inapp ? `<div class="iwarn">⚠️ أنت تفتح الاختبار من داخل تطبيق (مثل واتساب أو تيليجرام)، والتثبيت لا يعمل من هنا. اضغط النقاط أو زر المشاركة في الأعلى واختر <b>«فتح في ${ios?"Safari":"Chrome"}»</b> أو <b>«فتح في المتصفح»</b>، ثم ثبّت التطبيق.</div>` : ""}${iosNotSafari ? `<div class="iwarn">⚠️ على آيفون يفضَّل فتح الرابط في <b>Safari</b> للتثبيت.</div>` : ""}
     <div class="isteps" id="isteps" hidden>${ios
       ? `<b>طريقة التثبيت على آيفون:</b><ol><li>افتح هذا الرابط في متصفح <b>Safari</b>.</li><li>اضغط زر المشاركة <span class="k">⬆️</span> أسفل الشاشة.</li><li>اختر <b>«إضافة إلى الشاشة الرئيسية»</b>.</li><li>اضغط <b>«إضافة»</b> في الأعلى.</li></ol>`
       : `<b>طريقة التثبيت على أندرويد:</b><ol><li>افتح هذا الرابط في متصفح <b>Chrome</b>.</li><li>اضغط النقاط الثلاث <span class="k">⋮</span> أعلى الشاشة.</li><li>اختر <b>«تثبيت التطبيق»</b> أو <b>«إضافة إلى الشاشة الرئيسية»</b>.</li><li>اضغط <b>«تثبيت»</b> للتأكيد.</li></ol>`}</div>`;
@@ -293,6 +305,7 @@ addEventListener("DOMContentLoaded", ()=>{
 .installbtn b{display:block;font-size:1.05rem}
 .installbtn small{display:block;font-weight:500;font-size:.8rem;opacity:.92}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+.iwarn{text-align:start;background:var(--bad-soft);color:var(--bad);border-radius:12px;padding:10px 14px;font-size:.9rem}
 .isteps{text-align:start;background:var(--ball-soft);border-radius:12px;padding:12px 16px;font-size:.92rem}
 .isteps ol{margin:6px 0 0;padding-inline-start:20px}
 .isteps li{margin:4px 0}
